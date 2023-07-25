@@ -1,5 +1,7 @@
 import React from 'react';
 import NavLinkVertical from '@/Components/NavLinkVertical';
+import NavLink from '@/Components/NavLink';
+import { BarChartFill, GraphUp, FileMinus } from 'react-bootstrap-icons';
 
 const LeftPanel = (props) => {
     const path = window.location.pathname
@@ -46,16 +48,17 @@ const LeftPanel = (props) => {
             <NavLinkVertical href={route('vital-stats.edit', { vital_stat: 0, person_id: props.person_id })} active={route().current('vital-stats.edit')}>
                 new record
             </NavLinkVertical>
-            {
-                [{ none: 'no chart'}, { line: 'line chart'}, { column: 'bar chart'}, ].map(c => {
-                    let k = Object.keys(c)[0]
-                    return (
-                        <NavLinkVertical key={ k } href={ getUrl(props.person_id, k) } active={ k == chartType }>
-                            { c[k] }
-                        </NavLinkVertical>
-                    )
-                })
-            }
+            <div className='flex pt-5'>
+                <NavLink href={ getUrl(props.person_id, 'none') } active={ 'none' == chartType }>
+                    <FileMinus />
+                </NavLink>
+                <NavLink href={ getUrl(props.person_id, 'column') } active={ 'column' == chartType }>
+                    <BarChartFill />
+                </NavLink>
+                <NavLink href={ getUrl(props.person_id, 'line') } active={ 'line' == chartType }>
+                    <GraphUp />
+                </NavLink>
+            </div>
             {
                 props.people.map(p => {
                     return (

@@ -5,7 +5,7 @@ import { format, parseISO, isLeapYear } from 'date-fns';
 import GridNav from '@/Components/GridNav';
 import VitoChart from '@/Components/VitoChart';
 import { parseQuery } from '@/Helpers/OmniHelper';
-import { ChevronCompactDown, ChevronCompactUp } from 'react-bootstrap-icons';
+import { ChevronCompactDown, ChevronCompactUp, Download, Pencil } from 'react-bootstrap-icons';
 
 const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDateInfo}) => {
     const queryString = parseQuery(window.location.search)
@@ -177,18 +177,20 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.swim }</td>
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.bp }</td>
                                     <td className='border border-slate-300 px-3 py-1'>
+                                        <div className='flex'>
                                         {
                                             agg === 'd' &&
                                             <Link href={route('vital-stats.fetch', { person_id: 1, dt: r.id })} >
-                                                f
+                                                <Download />
                                             </Link>
                                         }
                                         {
                                             agg === 'd' &&
                                             <Link href={route('vital-stats.edit', r.record_id )} className='px-1'>
-                                                e
+                                                <Pencil />
                                             </Link>
                                         }
+                                        </div>
                                     </td>
                                 </tr>
                             )

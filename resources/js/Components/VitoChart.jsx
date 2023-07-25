@@ -3,8 +3,6 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 const VitoChart = (props) => {
-
-    console.log(props)
     let chartType = props.chart_type || 'none'
     let metrics = props.metrics ? props.metrics.split(',') : ['distance_run']
     const getSeries = (metric) => {
