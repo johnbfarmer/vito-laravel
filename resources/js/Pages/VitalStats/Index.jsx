@@ -36,21 +36,22 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
         if (e.key === "Meta") {
             setMetaDown(false)
         }
-        console.log(e)
     }
 
     useEffect(() => {
         document.addEventListener("keydown", handleKeyDown, false);
         document.addEventListener("keyup", handleKeyUp, false);
-        window.addEventListener("popstate", (e) => {console.log(e.state)}, false);
     }, [qs])
 
     const dateDisplay = (rec) => {
         let args = { ...qs }
+        console.log(route('vital-stats.edit', rec.record_id ) + getFilterQueryString(args))
+        console.log( getFilterQueryString(args))
+        console.log((args))
         switch (agg) {
             case 'd':
                 return (
-                    <Link href={route('vital-stats.edit', rec.record_id )} preserveState className='px-1'>
+                    <Link href={route('vital-stats.edit', rec.record_id ) + getFilterQueryString(args)} preserveState className='px-1'>
                         { rec.date }
                     </Link>
                 )
@@ -85,7 +86,7 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
 
     const title = 'VITO'
 
-    const getFilterQueryString = (f, qs) => {
+    const getFilterQueryString = (qs) => {
         let newQs = ''
         let filterQsObj = qs
         for (let j in filterQsObj) {
@@ -94,9 +95,9 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
         return newQs.length ? '?' + newQs.substring(0,newQs.length-1) : ''
     }
 
-    const modifyUrlByFilter = (f, qs) => {
+    const modifyUrlByFilter = (qs) => {
         let initialUrl = window.location.pathname
-        let url = initialUrl + getFilterQueryString(f, qs)
+        let url = initialUrl + getFilterQueryString(qs)
         history.pushState(null, '', url)
         // console.log(url)
         router.visit(url, { preserveScroll: true })
@@ -107,7 +108,7 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
             qs.u = data.length
         }
         qs.u = 1*qs.u + Math.min(12, qs.u)
-        modifyUrlByFilter({}, qs)
+        modifyUrlByFilter(qs)
 
         return pullData(qs)
     }
@@ -117,7 +118,7 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
             qs.u = data.length
         }
         qs.u = 1*qs.u - Math.min(12, Math.floor(qs.u/2))
-        modifyUrlByFilter({}, qs)
+        modifyUrlByFilter(qs)
 
         return pullData(qs)
     }

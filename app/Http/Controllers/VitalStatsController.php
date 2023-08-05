@@ -207,7 +207,7 @@ class VitalStatsController extends Controller
         // return back();
         $url = $qs['url'];
         if ($url === 'unknown') {
-            $url = route('vital-stats.index', [ "person_id" => $qs['person_id'], "agg" => 'd' ]);
+            $url = route('vital-stats.index', [ "person_id" => $qs['person_id'], "agg" => $qs['agg'] ?? 'm', "u" => $qs['u'] ?? null, "e" => $qs['e'] ?? null]);
         }
         return redirect($url);
     }
