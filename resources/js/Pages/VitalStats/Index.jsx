@@ -145,9 +145,8 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
         .then(res => res.json())
         .then(
             (results) => {
-                let xxx = parseQuery(window.location.search)
-                console.log('results',results, 'xxx', xxx)
-                pullData(xxx)
+                let params = parseQuery(window.location.search)
+                pullData(params)
             },
             (error) => {
                 console.log('error',error)
@@ -178,7 +177,7 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
         }
         // TBI if MetaDown add the other type of chart, ie if currently col, add line usw
         setQs(tmp)
-        modifyUrlByFilter({}, tmp)
+        modifyUrlByFilter(tmp)
     }
 
     return (

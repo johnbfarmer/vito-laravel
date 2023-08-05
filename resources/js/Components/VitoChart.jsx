@@ -8,7 +8,7 @@ const yAxesList = {
     ttl_sm: { units: 'number'},
     km: { units: 'km'},
     mins: { units: 'minutes'},
-    stepsPerKm: { units: 'step-km'},
+    stepsPerKm: { units: 'steps/km'},
     pct: { units: 'percent'},
     weight: { units: 'kg'},
     mi: { units: 'miles'},
