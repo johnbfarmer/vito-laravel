@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Link, Head } from '@inertiajs/react';
+import { router, Link, Head } from '@inertiajs/react';
 import { format, parseISO, isLeapYear } from 'date-fns';
 import GridNav from '@/Components/GridNav';
 import VitoChart from '@/Components/VitoChart';
@@ -18,10 +18,14 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
     const [dateInfo, setDateInfo] = useState(reqDateInfo)
     const [qs, setQs] = useState(queryString)
     const [altDown, setAltDown] = useState(false)
+    const [metaDown, setMetaDown] = useState(false)
 
     const handleKeyDown = (e) => {
         if (e.altKey) {
             setAltDown(true)
+        }
+        if (e.key === "Meta") {
+            setMetaDown(true)
         }
     }
 
@@ -29,11 +33,16 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
         if (e.key === "Alt") {
             setAltDown(false)
         }
+        if (e.key === "Meta") {
+            setMetaDown(false)
+        }
+        console.log(e)
     }
 
     useEffect(() => {
         document.addEventListener("keydown", handleKeyDown, false);
         document.addEventListener("keyup", handleKeyUp, false);
+        window.addEventListener("popstate", (e) => {console.log(e.state)}, false);
     }, [qs])
 
     const dateDisplay = (rec) => {
@@ -41,7 +50,7 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
         switch (agg) {
             case 'd':
                 return (
-                    <Link href={route('vital-stats.edit', rec.record_id )} className='px-1'>
+                    <Link href={route('vital-stats.edit', rec.record_id )} preserveState className='px-1'>
                         { rec.date }
                     </Link>
                 )
@@ -76,11 +85,30 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
 
     const title = 'VITO'
 
+    const getFilterQueryString = (f, qs) => {
+        let newQs = ''
+        let filterQsObj = qs
+        for (let j in filterQsObj) {
+            newQs = newQs + j + '=' + filterQsObj[j] + '&'
+        }
+        return newQs.length ? '?' + newQs.substring(0,newQs.length-1) : ''
+    }
+
+    const modifyUrlByFilter = (f, qs) => {
+        let initialUrl = window.location.pathname
+        let url = initialUrl + getFilterQueryString(f, qs)
+        history.pushState(null, '', url)
+        // console.log(url)
+        router.visit(url, { preserveScroll: true })
+    }
+
     const expand = (e) => {
         if (!('u' in qs)) {
             qs.u = data.length
         }
         qs.u = 1*qs.u + Math.min(12, qs.u)
+        modifyUrlByFilter({}, qs)
+
         return pullData(qs)
     }
 
@@ -89,6 +117,8 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
             qs.u = data.length
         }
         qs.u = 1*qs.u - Math.min(12, Math.floor(qs.u/2))
+        modifyUrlByFilter({}, qs)
+
         return pullData(qs)
     }
 
@@ -98,7 +128,6 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
         .then(res => res.json())
         .then(
             (results) => {
-                // console.log('results',results)
                 setData(results.reqData)
                 setTotal(results.reqTotal)
                 setAvgs(results.reqAvgs)
@@ -110,20 +139,45 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
         )
     }
 
+    const refreshDay = (dt) => {
+        fetch(route('vital-stats.fetch', { person_id: 1, dt: dt }))
+        .then(res => res.json())
+        .then(
+            (results) => {
+                let xxx = parseQuery(window.location.search)
+                console.log('results',results, 'xxx', xxx)
+                pullData(xxx)
+            },
+            (error) => {
+                console.log('error',error)
+            }
+        )
+    }
+
     const chartMetric = (m) => {
         let tmp = { ...qs }
         if (altDown && tmp.metrics.length) {
-            let xxx = tmp.metrics.split(',')
-            if (xxx.indexOf(m) < 0) {
-                xxx.push(m)
+            let metricsArr = tmp.metrics.split(',')
+            if (metricsArr.indexOf(m) < 0) {
+                metricsArr.push(m)
             } else {
-                let pos = xxx.indexOf(m);
-                xxx.splice(pos, 1);
+                let pos = metricsArr.indexOf(m);
+                metricsArr.splice(pos, 1);
             }
-            m = xxx.join(',')
+            m = metricsArr.join(',')
         }
         tmp.metrics = m
+        if (tmp.metrics.length) {
+            if (!('chart_type' in tmp) || tmp.chart_type === 'none') {
+                tmp.chart_type = 'line'
+            }
+        } else {
+            delete tmp.metrics
+            delete tmp.chart_type
+        }
+        // TBI if MetaDown add the other type of chart, ie if currently col, add line usw
         setQs(tmp)
+        modifyUrlByFilter({}, tmp)
     }
 
     return (
@@ -176,17 +230,17 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.distance_biked }</td>
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.swim }</td>
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.bp }</td>
-                                    <td className='border border-slate-300 px-3 py-1'>
-                                        <div className='flex'>
+                                    <td className='border border-slate-300 px-3 py-1 text-center'>
+                                        <div className='flex justify-center'>
                                         {
                                             agg === 'd' &&
-                                            <Link href={route('vital-stats.fetch', { person_id: 1, dt: r.id })} >
+                                            <div className='cursor-pointer mx-4' onClick={ () => refreshDay(r.id) } >
                                                 <Download />
-                                            </Link>
+                                            </div>
                                         }
                                         {
                                             agg === 'd' &&
-                                            <Link href={route('vital-stats.edit', r.record_id )} className='px-1'>
+                                            <Link href={route('vital-stats.edit', r.record_id )} className='mx-4'>
                                                 <Pencil />
                                             </Link>
                                         }

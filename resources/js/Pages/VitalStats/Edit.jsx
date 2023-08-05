@@ -1,6 +1,6 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { useForm, Head } from '@inertiajs/react';
+import { router, useForm, Head } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -33,8 +33,8 @@ const Edit = ({ auth, vs, people, person_id }) => {
         very_active_minutes: id ? vs.very_active_minutes : 0,
         weight: id ? vs.weight : '',
         za: id && vs.za,
+        url: document.referrer || 'unknown' // <---- not working... how to get?
     });
-
     const submit = (e) => {
         e.preventDefault();
         console.log(data)

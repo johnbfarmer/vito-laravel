@@ -72,8 +72,6 @@ class VitalStatsController extends Controller
         $agg = 'w';
         $nu = $qs['u'] ?? 10;
         $data = $this->assembleVitalStatsData($personId, $agg, $ed, $nu);
-        // $data['dateInfo']['previousView'] = 'month';
-        // $data['dateInfo']['previousViewData'] = ['person_id' => $personId, 'yearMonth' => date('Ym', strtotime($data['dateInfo']['previousEndDate']))];
         
         return Inertia::render('VitalStats/Index', $data);
     }
@@ -81,7 +79,6 @@ class VitalStatsController extends Controller
     protected function assembleVitalStatsData($personId, $agg, $ed, $nu)
     {
         $dateInfo = OmniHelper::getDateInfo($ed, $agg, $nu, $personId);
-        // OmniHelper::log($dateInfo);
         $sd = $dateInfo['startOfDateRange'];
         return [
             'reqData' => VitalStats::userData($personId, $sd, $ed, $agg),
@@ -98,7 +95,8 @@ class VitalStatsController extends Controller
     {
         $qs = $request->all();
         FitbitFetch::autoExecute(['date' => $qs['dt'], 'userId' => $qs['person_id']]);
-        return redirect(route('vital-stats.index', [ "person_id" => $qs['person_id'], "agg" => 'd' ]));
+        // return redirect(route('vital-stats.index', [ "person_id" => $qs['person_id'], "agg" => 'd' ]));
+        return [];
     }
 
     /**
@@ -206,7 +204,12 @@ class VitalStatsController extends Controller
             $vs->update($validated);
         }
 
-        return redirect(route('vital-stats.index', [ "person_id" => $qs['person_id'], "agg" => 'd' ]));
+        // return back();
+        $url = $qs['url'];
+        if ($url === 'unknown') {
+            $url = route('vital-stats.index', [ "person_id" => $qs['person_id'], "agg" => 'd' ]);
+        }
+        return redirect($url);
     }
 
     /**
