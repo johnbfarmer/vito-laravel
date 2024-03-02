@@ -12,20 +12,22 @@ const yAxesList = {
     pct: { units: 'percent'},
     weight: { units: 'kg'},
     mi: { units: 'miles'},
+    bpm: { units: 'bpm'},
 }
 const yAxesByMetric = {
-    score: 'ttl',
+    score: 'ttl_sm',
     distance_run: 'km',
     distance: 'km',
-    abdominals: 'ttl',
+    abdominals: 'ttl_sm',
     sleep: 'mins',
     steps: 'ttl_lg',
     stepsPerKm: 'stepsPerKm',
     za: 'pct',
     weight: 'weight',
     floors: 'ttl',
-    floors_run: 'ttl',
+    floors_run: 'ttl_sm',
     very_active_minutes: 'ttl',
+    heart_rate: 'bpm',
     distance_biked: 'mi',
     swim: 'ttl_sm',
 }
@@ -41,7 +43,11 @@ const VitoChart = (props) => {
         props.data.forEach(d => {
             let pt = parseFloat(d[metric])
             if (pt) {
-                data.push([Date.parse(d['date']), pt])
+                let dt = d['date']
+                if (dt.indexOf('-') >= 0) {
+                    dt = dt.substring(dt.indexOf('-') + 2)
+                }
+                data.push([Date.parse(dt), pt])
             }
         })
         let yAxis = yAxesByMetric[metric]
@@ -86,6 +92,7 @@ const VitoChart = (props) => {
         xAxis: {
             type: 'datetime',
             ordinal: true,
+            tickPixelInterval: 180,
             labels: {
                 formatter: function() {
                 return Highcharts.dateFormat('%b %e, %Y', this.value);

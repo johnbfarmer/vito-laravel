@@ -44,7 +44,7 @@ class OmniHelper
             case 'y':
                 return date('Y-01-01', strtotime("$startDate + ".($numberOfUnits - 1) . " years"));
             default:
-                return date('Y-m-01', strtotime("$startDate + ".($numberOfUnits - 1) . " months"));
+                return date('Y-m-t', strtotime("$startDate + ".($numberOfUnits - 1) . " months"));
 
         }
     }
@@ -52,10 +52,14 @@ class OmniHelper
     public static function getDateInfo($endDate, $agg, $numberOfUnits, $personId)
     {
         $startOfDateRange = self::getStartOfDateRange($endDate, $agg, $numberOfUnits);
+        self::log($startOfDateRange);
+        self::log($endDate);
+        self::log($agg);
         $previousEndDate = date('Y-m-d', strtotime($startOfDateRange . ' - 1 day'));
         $nextStartDate = date('Y-m-d', strtotime($endDate . ' + 1 day'));
         $previousStartDate = self::getStartOfDateRange($previousEndDate, $agg, $numberOfUnits);
         $nextEndDate = self::getEndOfDateRange($nextStartDate, $agg, $numberOfUnits);
+        self::log($nextEndDate);
         $previousNumberOfUnits = date_diff(date_create($previousEndDate), date_create($previousStartDate))->format('%a');
 
         return [

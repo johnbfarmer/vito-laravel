@@ -45,9 +45,6 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
 
     const dateDisplay = (rec) => {
         let args = { ...qs }
-        console.log(route('vital-stats.edit', rec.record_id ) + getFilterQueryString(args))
-        console.log( getFilterQueryString(args))
-        console.log((args))
         switch (agg) {
             case 'd':
                 return (
@@ -202,6 +199,7 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
                             <th className='border border-slate-300 px-3 py-4 bg-slate-300 cursor-pointer' onClick={ () => chartMetric('floors') } >floors</th>
                             <th className='border border-slate-300 px-3 py-4 bg-slate-300 cursor-pointer' onClick={ () => chartMetric('floors_run') } >floors_run</th>
                             <th className='border border-slate-300 px-3 py-4 bg-slate-300 cursor-pointer' onClick={ () => chartMetric('very_active_minutes') } >vam</th>
+                            <th className='border border-slate-300 px-3 py-4 bg-slate-300 cursor-pointer' onClick={ () => chartMetric('heart_rate') } >heart</th>
                             <th className='border border-slate-300 px-3 py-4 bg-slate-300 cursor-pointer' onClick={ () => chartMetric('distance_biked') } >mi biked</th>
                             <th className='border border-slate-300 px-3 py-4 bg-slate-300 cursor-pointer' onClick={ () => chartMetric('swim') } >swim</th>
                             <th className='border border-slate-300 px-3 py-4 bg-slate-300 cursor-pointer' onClick={ () => chartMetric('bp') } >bp</th>
@@ -227,6 +225,7 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.floors }</td>
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.floors_run }</td>
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.very_active_minutes }</td>
+                                    <td className='border border-slate-300 px-3 py-1 text-right'>{ r.heart_rate }</td>
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.distance_biked }</td>
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.swim }</td>
                                     <td className='border border-slate-300 px-3 py-1 text-right'>{ r.bp }</td>
@@ -264,6 +263,7 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ total.floors }</td>
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ total.floors_run }</td>
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ total.very_active_minutes }</td>
+                            <td className='border border-slate-300 px-3 py-1 text-right'>{ total.heart_rate }</td>
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ total.distance_biked }</td>
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ total.swim }</td>
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ total.bp }</td>
@@ -284,6 +284,7 @@ const Index = ({auth, reqData, reqTotal, reqAvgs, agg, people, personId, reqDate
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ avgs.floors }</td>
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ avgs.floors_run }</td>
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ avgs.very_active_minutes }</td>
+                            <td className='border border-slate-300 px-3 py-1 text-right'>{ avgs.heart_rate }</td>
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ avgs.distance_biked }</td>
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ avgs.swim }</td>
                             <td className='border border-slate-300 px-3 py-1 text-right'>{ total.bp }</td>

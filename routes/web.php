@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/vital-stats/fetch', [VitalStatsController::class, 'fetch'])->name('vital-stats.fetch');
     Route::get('/vital-stats/pull', [VitalStatsController::class, 'indexAjax'])->name('vital-stats.pull');
     Route::get('/vital-stats/this-month', [VitalStatsController::class, 'thisMonth'])->name('vital-stats.this-month');
+    Route::get('/vital-stats/this-week', [VitalStatsController::class, 'thisWeek'])->name('vital-stats.this-week');
     Route::get('/vital-stats/weeks', [VitalStatsController::class, 'weeks'])->name('vital-stats.weeks');
     Route::get('/vital-stats/month/{yearMonth}', [VitalStatsController::class, 'month'])->name('vital-stats.month');
 });

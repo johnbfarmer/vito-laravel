@@ -30,7 +30,7 @@ const GridNav = (props) => {
     return (
         <div className="w-full flex justify-center space-x-8">
             <div className=''><Link href={ route('vital-stats.' + prevView, prevViewData) }>&lt;</Link></div>
-            <div className=''>Vito Stats { aggly } { props.startOfDateRange } - { props.endOfDateRange }</div>
+            <div className=''>Vito Stats { props.startOfDateRange } - { props.endOfDateRange }</div>
             <div className=''><Link href={ route('vital-stats.' + prevView, nextViewData) }>&gt;</Link></div>
         </div>
     );

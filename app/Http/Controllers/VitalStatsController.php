@@ -49,6 +49,19 @@ class VitalStatsController extends Controller
         return $this->month($request, date('Ym'));
     }
 
+    public function thisWeek(Request $request)
+    {
+        $qs = $request->all();
+        $personId = $qs['person_id'] ?? 1;
+        $ed = date('Y-m-d');
+        $nu = date('N', strtotime($ed));
+        $ed = date('Y-m-d', strtotime($ed . ' + ' . (7 - $nu) . ' day'));
+        $agg = 'd';
+        $data = $this->assembleVitalStatsData($personId, $agg, $ed, 7);
+        
+        return Inertia::render('VitalStats/Index', $data);
+    }
+
     public function month(Request $request, $yearMonth)
     {
         $qs = $request->all();
@@ -59,7 +72,7 @@ class VitalStatsController extends Controller
         $data = $this->assembleVitalStatsData($personId, $agg, $ed, $nu);
         $data['reqDateInfo']['previousView'] = 'month';
         $data['reqDateInfo']['previousViewData'] = ['person_id' => $personId, 'yearMonth' => date('Ym', strtotime($data['reqDateInfo']['previousEndDate']))];
-        $data['reqDateInfo']['nextViewData'] = ['person_id' => $personId, 'yearMonth' => date('Ym', strtotime($data['reqDateInfo']['nextEndDate']))];
+        $data['reqDateInfo']['nextViewData'] = ['person_id' => $personId, 'yearMonth' => date('Ym', strtotime($data['reqDateInfo']['nextStartDate']))];
         
         return Inertia::render('VitalStats/Index', $data);
     }
@@ -70,7 +83,7 @@ class VitalStatsController extends Controller
         $personId = $qs['person_id'] ?? 1;
         $ed = $qs['dt'] ?? date('Y-m-d');
         $agg = 'w';
-        $nu = $qs['u'] ?? 10;
+        $nu = $qs['u'] ?? 13;
         $data = $this->assembleVitalStatsData($personId, $agg, $ed, $nu);
         
         return Inertia::render('VitalStats/Index', $data);
@@ -204,10 +217,9 @@ class VitalStatsController extends Controller
             $vs->update($validated);
         }
 
-        // return back();
         $url = $qs['url'];
         if ($url === 'unknown') {
-            $url = route('vital-stats.index', [ "person_id" => $qs['person_id'], "agg" => $qs['agg'] ?? 'm', "u" => $qs['u'] ?? null, "e" => $qs['e'] ?? null]);
+            $url = route('vital-stats.this-month', [ "person_id" => $qs['person_id']]);
         }
         return redirect($url);
     }

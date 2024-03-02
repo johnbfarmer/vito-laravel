@@ -22,6 +22,7 @@ class VitalStats extends Model
         'fairly_active_minutes',
         'floors_run',
         'floors',
+        'heart_rate',
         'height',
         'lightly_active_minutes',
         'person_id',
@@ -50,6 +51,7 @@ class VitalStats extends Model
             ROUND(SUM(`floors`)) AS floors,
             ROUND(SUM(`floors_run`)) AS floors_run,
             ROUND(SUM(`very_active_minutes`)) AS very_active_minutes,
+            ROUND(AVG(`heart_rate`)) AS heart_rate,
             ROUND(SUM(`distance_biked`)) AS distance_biked,
             ROUND(SUM(`swim`)) AS swim,
             CONCAT(ROUND(AVG(`systolic`)),"/",ROUND(AVG(`diastolic`))) AS bp,
@@ -89,6 +91,7 @@ class VitalStats extends Model
             ROUND(AVG(`floors`)) AS floors,
             ROUND(AVG(`floors_run`)) AS floors_run,
             ROUND(AVG(`very_active_minutes`)) AS very_active_minutes,
+            ROUND(AVG(`heart_rate`)) AS heart_rate,
             ROUND(AVG(`distance_biked`)) AS distance_biked,
             ROUND(AVG(`swim`)) AS swim,
             ROUND(AVG(`abdominals`)) AS abdominals
@@ -96,6 +99,7 @@ class VitalStats extends Model
             ' . $innerQuery . '
             ) TMP';
 
+            OmniHelper::log($sql);
             return  DB::select($sql, [$id, $sd, $ed])[0];
     }
 

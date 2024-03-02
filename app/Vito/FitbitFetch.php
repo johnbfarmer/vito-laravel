@@ -37,6 +37,7 @@ class FitbitFetch // extends BaseProcess
         $this->date = $this->parameters['date'];
         $personId = $this->parameters['userId'];
         $this->person = Person::find($personId);
+        OmniHelper::log($this->person);
         // $days = $this->parameters['days'];
         // $this->storeOnly = $this->parameters['update-db'] == 0;
         // $this->personId = $this->parameters['personId'];
@@ -96,6 +97,7 @@ class FitbitFetch // extends BaseProcess
         $vs->fairly_active_minutes = $this->data['fairlyActiveMinutes'];
         $vs->lightly_active_minutes = $this->data['lightlyActiveMinutes'];
         $vs->sedentary_minutes = $this->data['sedentaryMinutes'];
+        $vs->heart_rate = $this->data['heartRate'];
         $vs->sleep = $this->data['sleep'];
         $vs->save();
         DB::update('UPDATE vital_stats SET score = 10 * distance_run + 5 * abdominals + 5 * swim + 8 * distance_biked + 1 * very_active_minutes + 0.4 * fairly_active_minutes + 0.2 * lightly_active_minutes + 1 * (floors + floors_run) + 5 * distance
@@ -132,6 +134,7 @@ class FitbitFetch // extends BaseProcess
             'fairlyActiveMinutes' => $activities['summary']['fairlyActiveMinutes'],
             'lightlyActiveMinutes' => $activities['summary']['lightlyActiveMinutes'],
             'sedentaryMinutes' => $activities['summary']['sedentaryMinutes'],
+            'heartRate' => $activities['summary']['restingHeartRate'],
             'distance' => $distance,
         ];
     }

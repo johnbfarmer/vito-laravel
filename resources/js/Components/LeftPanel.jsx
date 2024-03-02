@@ -39,6 +39,9 @@ const LeftPanel = (props) => {
             <NavLinkVertical href={route('vital-stats.this-month', { person_id: props.person_id, chart_type: chartType, metrics: metrics })} active={ agg === 'd' || route().current('vital-stats.this-month') }>
                 this month
             </NavLinkVertical>
+            <NavLinkVertical href={route('vital-stats.this-week', { person_id: props.person_id, chart_type: chartType, metrics: metrics })} active={ agg === 'd' || route().current('vital-stats.this-week') }>
+                this week
+            </NavLinkVertical>
             <NavLinkVertical href={route('vital-stats.weeks', { person_id: props.person_id, chart_type: chartType, metrics: metrics })} active={route().current('vital-stats.weeks')}>
                 last few weeks
             </NavLinkVertical>
